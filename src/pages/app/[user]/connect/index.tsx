@@ -1,17 +1,10 @@
+import Container from '@/components/container'
 import { FaGithub } from 'react-icons/fa'
 
 export default function Painel() {
 	return (
-		<div className='h-screen w-full flex flex-col items-center'>
-			<div className='breadcrumbs text-sm'>
-				<ul>
-					<li>Dashboard</li>
-				</ul>
-			</div>
-
-			<h1 className='text-4xl font-bold'>Painel</h1>
-
-			<div className='m-auto'>
+		<Container>
+			<div className='m-auto w-full max-w-xl'>
 				<div className='bg-base-200 rounded-box'>
 					<div className='card-body'>
 						<p className='mb-4'>If a dog chews shoes whose shoes does he choose?</p>
@@ -24,6 +17,6 @@ export default function Painel() {
 					</div>
 				</div>
 			</div>
-		</div>
+		</Container>
 	)
 }

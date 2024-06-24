@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { FaArrowRight } from 'react-icons/fa'
 
 export default function Row() {
@@ -5,16 +6,22 @@ export default function Row() {
 		<tr>
 			<td>Project name</td>
 			<td>
-				Zemlak, Daniel and Leannon
-				<br />
-				<span className='badge badge-ghost badge-sm'>Desktop Support Technician</span>
+				<pre className='text-primary'>
+					<code>quickhub</code>
+				</pre>
 			</td>
-			<td>Purple</td>
+			<td>
+				<span className='badge badge-neutral'>8</span>
+			</td>
 			<th className='text-end'>
-				<button className='btn'>
+				<Link
+					className='btn'
+					href={'/app/[user]/[organization]/projects/[project]'}
+					as={'/app/jxnata/jxnata/projects/quickhub'}
+				>
 					Open
 					<FaArrowRight />
-				</button>
+				</Link>
 			</th>
 		</tr>
 	)
