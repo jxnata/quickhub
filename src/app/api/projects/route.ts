@@ -1,5 +1,6 @@
 import { auth } from "@/helpers/auth"
 import { connect } from "@/helpers/database"
+import Members from "@/models/members"
 import Projects from "@/models/projects"
 import Users from "@/models/users"
 import { Request } from "@/types/api"
@@ -24,6 +25,12 @@ export const POST = auth(async function (req: Request) {
             public: body.access === 'public',
             owner: owner._id
         });
+
+        await Members.create({
+            user: owner._id,
+            project: project._id,
+            role: 2
+        })
 
         return NextResponse.json({ project }, { status: 201 });
     } catch (error) {
