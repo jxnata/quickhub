@@ -11,8 +11,9 @@ const MemberSchema = new Schema<IMember>({
 		ref: "Project",
 	},
 	role: {
-		type: String,
-		enum: ["owner", "editor", "viewer"],
+		type: Number,
+		enum: [0, 1, 2],
+		default: 0,
 		required: true,
 	},
 	created_at: {
@@ -21,6 +22,6 @@ const MemberSchema = new Schema<IMember>({
 	},
 });
 
-const Members = mongoose.model<IMember>("Member", MemberSchema, "Members");
+const Members = mongoose.models?.Member || mongoose.model<IMember>("Member", MemberSchema, "members");
 
 export default Members;

@@ -1,4 +1,6 @@
 import Container from '@/components/container'
+import Content from '@/components/content'
+import PainelNavbar from '@/components/painel-navbar'
 import themes from '@/constants/themes'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -21,38 +23,38 @@ export default function Settings() {
 
 	return (
 		<Container>
-			<div className='flex w-full justify-between items-end max-w-7xl mt-4 mb-8'>
-				<div className='flex flex-col'>
+			<PainelNavbar title='Settings' />
+			<Content>
+				<div className='flex w-full max-w-7xl mt-4 mb-8'>
 					<div className='breadcrumbs text-sm'>
 						<ul>
 							<li>
-								<Link href='/app/[user]/organization' as='/app/jxnata/organization'>
-									Organization
+								<Link href='/app' as='/app'>
+									Projects
 								</Link>
 							</li>
 							<li>Settings</li>
 						</ul>
 					</div>
-					<h1 className='text-4xl font-bold'>Settings</h1>
 				</div>
-			</div>
 
-			<div className='w-full max-w-7xl'>
-				<label className='form-control w-full max-w-xs'>
-					<div className='label'>
-						<span className='label-text'>Select your theme</span>
-					</div>
-					<select
-						value={theme}
-						onChange={handleThemeChange}
-						className='select select-bordered w-full max-w-xs'
-					>
-						{themes.map((theme, i) => (
-							<option key={i}>{theme}</option>
-						))}
-					</select>
-				</label>
-			</div>
+				<div className='w-full max-w-7xl'>
+					<label className='form-control w-full max-w-xs'>
+						<div className='label'>
+							<span className='label-text'>Select your theme</span>
+						</div>
+						<select
+							value={theme}
+							onChange={handleThemeChange}
+							className='select select-bordered w-full max-w-xs'
+						>
+							{themes.map((theme, i) => (
+								<option key={i}>{theme}</option>
+							))}
+						</select>
+					</label>
+				</div>
+			</Content>
 		</Container>
 	)
 }

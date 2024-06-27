@@ -6,11 +6,19 @@ const ProjectSchema = new Schema<IProject>({
 		type: String,
 		required: true,
 		unique: true,
+		maxlength: 128,
+	},
+	description: {
+		type: String,
+		required: true,
+		maxlength: 1024,
 	},
 	repository: {
 		type: String,
 		required: true,
 		unique: true,
+		trim: true,
+		maxlength: 128,
 	},
 	creator: {
 		type: Schema.Types.ObjectId,
@@ -26,6 +34,6 @@ const ProjectSchema = new Schema<IProject>({
 	},
 });
 
-const Projects = mongoose.model<IProject>("Project", ProjectSchema, "Projects");
+const Projects = mongoose.models?.Project || mongoose.model<IProject>("Project", ProjectSchema, "projects");
 
 export default Projects;

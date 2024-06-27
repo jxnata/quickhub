@@ -1,11 +1,18 @@
 import NextAuth from "next-auth"
 import github from "next-auth/providers/github"
-import google from "next-auth/providers/google"
 import { connect } from "./database"
 import Users from "@/models/users"
 
+declare module 'next-auth' {
+    interface Session {
+        accessToken?: string;
+    }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
-    providers: [github, google],
+    providers: [
+        github({ authorization: { params: { scope: "read:user user:email repo" } } })
+    ],
     callbacks: {
         async signIn({ user, profile }) {
             if (!profile) return false
@@ -26,13 +33,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             return true;
         },
-        jwt({ token, user }) {
+        jwt({ token, user, account }) {
             if (user) token.id = user.id
+            if (account) token.accessToken = account.access_token
 
             return token
         },
         session({ session, token }) {
             session.user.id = token.id as string
+            session.accessToken = token.accessToken as string;
             return session
         },
         redirect({ url, baseUrl }) {

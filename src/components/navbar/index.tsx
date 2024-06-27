@@ -14,10 +14,18 @@ export default function Navbar() {
 							viewBox='0 0 24 24'
 							stroke='currentColor'
 						>
-							<path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h8m-8 6h16' />
+							<path
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								strokeWidth='2'
+								d='M4 6h16M4 12h8m-8 6h16'
+							/>
 						</svg>
 					</div>
-					<ul tabIndex={0} className='menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow'>
+					<ul
+						tabIndex={0}
+						className='menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow'
+					>
 						<li>
 							<a href='#home'>Home</a>
 						</li>
@@ -47,7 +55,9 @@ export default function Navbar() {
 				</ul>
 			</div>
 			<div className='navbar-end mr-4'>
-				<a className='btn'>Login</a>
+				<Link href='/auth' className='btn'>
+					Login
+				</Link>
 			</div>
 		</div>
 	)
