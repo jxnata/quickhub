@@ -12,7 +12,7 @@ export default function Row({ project }: { project: Project }) {
 				</pre>
 			</td>
 			<td>
-				<span className='badge badge-neutral'>8</span>
+				<span className='badge badge-neutral'>{project.tasks_count}</span>
 			</td>
 			<th className='text-end'>
 				<Link className='btn btn-sm whitespace-nowrap' href={`/app/${project.repository}`}>

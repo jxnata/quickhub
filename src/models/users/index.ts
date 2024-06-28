@@ -29,11 +29,13 @@ const UserSchema = new Schema<IUser>({
 		type: String,
 		maxlength: 64,
 		validate: (value: string) => value.startsWith("cus_"),
+		select: false,
 	},
 	price_id: {
 		type: String,
 		maxlength: 64,
 		validate: (value: string) => value.startsWith("price_"),
+		select: false,
 	},
 	has_access: {
 		type: Boolean,
@@ -48,6 +50,11 @@ const UserSchema = new Schema<IUser>({
 		type: Number,
 		required: true,
 		default: plans.free.limits.tasks,
+	},
+	ai_api_key: {
+		type: String,
+		maxlength: 128,
+		select: false,
 	},
 	created_at: {
 		type: Date,

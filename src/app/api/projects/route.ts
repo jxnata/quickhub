@@ -1,5 +1,6 @@
 import { auth } from "@/helpers/auth"
 import { connect } from "@/helpers/database"
+import { serverLog } from "@/helpers/server-log"
 import Members from "@/models/members"
 import Projects from "@/models/projects"
 import Users from "@/models/users"
@@ -34,6 +35,7 @@ export const POST = auth(async function (req: Request) {
 
         return NextResponse.json({ project }, { status: 201 });
     } catch (error) {
+        serverLog(error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 })
@@ -49,10 +51,32 @@ export const GET = auth(async function (req: Request) {
         const skip = Number(searchParams.get('skip') || '0')
         const limit = Number(searchParams.get('limit') || '0')
 
-        const projects = await Projects.find().skip(skip).limit(limit);
+        const projects = await Projects.aggregate([
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $lookup: {
+                    from: 'Tasks',
+                    localField: '_id',
+                    foreignField: 'project',
+                    as: 'tasks',
+                },
+            },
+            {
+                $addFields: {
+                    tasks_count: { $size: '$tasks' },
+                },
+            },
+            {
+                $project: {
+                    tasks: 0,
+                },
+            },
+        ]);
 
         return NextResponse.json({ projects, skip, limit }, { status: 200 });
     } catch (error) {
+        serverLog(error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 })

@@ -3,6 +3,7 @@ export type Project = {
     name: string;
     repository: string;
     description: string;
+    tasks_count: number;
     public: boolean;
     creator: string;
     created_at: Date;

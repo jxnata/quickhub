@@ -29,7 +29,9 @@ export default function Settings() {
 
 			await api.post('/projects', data)
 
-			redirect('/app')
+			toast.success('Project created!')
+
+			window.history.back()
 		} catch {
 			toast.error('Failed to create project')
 		} finally {
@@ -138,7 +140,6 @@ export default function Settings() {
 								<span className='label-text'>Dashboard access</span>
 							</label>
 							<select
-								onChange={(e) => console.log(e.target.value)}
 								name='access'
 								id='access'
 								className='select select-bordered'
