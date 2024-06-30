@@ -14,7 +14,11 @@ export default function PainelNavbar({ title }: Props) {
 	return (
 		<div className='navbar bg-base-200 px-4'>
 			<div className='flex-1'>
-				<h1 className='text-xl font-bold'>{title}</h1>
+				{!!title ? (
+					<h1 className='text-xl font-bold'>{title}</h1>
+				) : (
+					<div className='skeleton rounded-md h-8 w-1/3' />
+				)}
 			</div>
 			<div className='flex-none'>
 				<div className='dropdown dropdown-end'>
@@ -47,5 +51,5 @@ export default function PainelNavbar({ title }: Props) {
 }
 
 type Props = {
-	title: string
+	title?: string
 }

@@ -14,3 +14,7 @@ export type ProjectList = {
     skip: number
     limit: number
 }
+
+export type ProjectView = {
+    project: Project
+}
