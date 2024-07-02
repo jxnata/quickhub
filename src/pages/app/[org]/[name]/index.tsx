@@ -5,7 +5,7 @@ import Task from '@/components/task'
 import useProject from '@/hooks/projects/view'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { FaPlus } from 'react-icons/fa'
+import { FaPlus, FaUpload } from 'react-icons/fa'
 
 export default function Project() {
 	const { query } = useRouter()
@@ -18,7 +18,7 @@ export default function Project() {
 
 			{project && (
 				<Content>
-					<div className='flex w-full max-w-7xl mt-4 mb-8'>
+					<div className='flex w-full justify-between items-center max-w-7xl mt-4 mb-8'>
 						<div className='breadcrumbs text-sm'>
 							<ul>
 								<li>
@@ -28,6 +28,15 @@ export default function Project() {
 								</li>
 								<li>{project.name}</li>
 							</ul>
+						</div>
+						<div className='flex items-center gap-2'>
+							<Link href={`/app/${project.repository}/create`} className='btn btn-primary'>
+								<FaPlus />
+								New Task
+							</Link>
+							<Link href={`/app/${project.repository}/create`} className='btn btn-secondary'>
+								<FaUpload />
+							</Link>
 						</div>
 					</div>
 					<div className='w-full max-w-7xl flex gap-4'>

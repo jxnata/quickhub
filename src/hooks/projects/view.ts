@@ -6,7 +6,9 @@ import useSWR from 'swr'
 const fetcher = (url: string) => api.get<ProjectView>(url).then(r => r.data)
 
 const useProject = ({ _id, repository }: Props) => {
-    const { data, error } = useSWR(`/projects/${repository && 'repo'}/${_id || repository}`, fetcher)
+    const enabled = !!_id || !!repository
+
+    const { data, error } = useSWR(enabled ? `/projects/${repository && 'repo'}/${_id || repository}` : null, fetcher)
 
     return {
         project: data?.project,

@@ -11,12 +11,10 @@ export default function Projects() {
 			<PainelNavbar title='Projects' />
 			<Content>
 				<div className='flex w-full justify-end items-end max-w-7xl my-4'>
-					<div className='flex gap-4'>
-						<Link href='/app/create' className='btn btn-primary'>
-							<FaPlus />
-							New Project
-						</Link>
-					</div>
+					<Link href='/app/create' className='btn btn-primary'>
+						<FaPlus />
+						New Project
+					</Link>
 				</div>
 
 				<div className='w-full max-w-7xl'>

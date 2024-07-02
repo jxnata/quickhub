@@ -9,8 +9,7 @@ import { RestEndpointMethodTypes } from '@octokit/rest'
 import { FormEvent, useCallback, useEffect, useState } from 'react'
 import { repoToName } from '@/utils/repo-to-name'
 import { toast } from 'sonner'
-import { AxiosError } from 'axios'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/router'
 
 type Repos = RestEndpointMethodTypes['repos']['listForAuthenticatedUser']['response']['data']
 
@@ -18,6 +17,7 @@ export default function Settings() {
 	const { data: session } = useSession()
 	const [repos, setRepos] = useState<Repos>([])
 	const [loading, setLoading] = useState(false)
+	const { push } = useRouter()
 
 	const submit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -31,7 +31,7 @@ export default function Settings() {
 
 			toast.success('Project created!')
 
-			window.history.back()
+			push(`/app/${data.repository}`)
 		} catch {
 			toast.error('Failed to create project')
 		} finally {
