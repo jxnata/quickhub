@@ -1,3 +1,6 @@
+import { Project } from "./projects";
+import { User } from "./users";
+
 export type Task = {
     _id: string;
     title: string;
@@ -7,15 +10,18 @@ export type Task = {
     tags: string[];
     priority: number;
     creator: string;
-    project: string;
-    assignees: string[];
+    project: Project;
+    assignees: User[];
     created_at: Date;
 }
 
 export type TaskList = {
-    tasks: Task[]
-    skip: number
-    limit: number
+    tasks: {
+        backlog: Task[],
+        todo: Task[],
+        in_progress: Task[],
+        done: Task[],
+    }
 }
 
 export type TaskView = {

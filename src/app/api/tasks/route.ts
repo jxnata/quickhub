@@ -2,7 +2,6 @@ import { auth } from "@/helpers/auth"
 import { connect } from "@/helpers/database"
 import { getOctokit } from "@/helpers/github"
 import { serverLog } from "@/helpers/server-log"
-import Projects from "@/models/projects"
 import Tasks from "@/models/tasks"
 import Users from "@/models/users"
 import IUser from "@/models/users/types"
@@ -26,6 +25,10 @@ export const POST = auth(async function (req: Request) {
 
         if (!owner) return NextResponse.json({ error: 'User not found.' }, { status: 404 });
 
+        // check number of tasks for this owner
+        if (owner.tasks_count >= owner.tasks_limit) return NextResponse.json({ error: `Limit of ${owner.tasks_limit} tasks reached` }, { status: 403 });
+
+        // create issue in github
         const octokit = getOctokit(session.accessToken)
 
         const issue = await octokit.issues.create({
@@ -39,8 +42,10 @@ export const POST = auth(async function (req: Request) {
 
         if (!issue || !issue.data) return NextResponse.json({ error: 'Error when creating github issue.' }, { status: 500 });
 
+        // get assignees users
         const assignees = await Users.find<IUser>({ username: { $in: explode(body.assignees) } });
 
+        // create task in database
         const task = await Tasks.create({
             title: body.title,
             description: body.description,
@@ -52,6 +57,9 @@ export const POST = auth(async function (req: Request) {
             issue_id: issue.data.number,
             creator: owner._id
         });
+
+        // update tasks count
+        await Users.updateOne({ _id: owner._id }, { $inc: { tasks_count: 1 } });
 
         return NextResponse.json({ task }, { status: 201 });
     } catch (error) {

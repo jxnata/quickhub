@@ -9,6 +9,8 @@ export default interface IUser extends Document {
 	price_id: string;
 	projects_limit: number;
 	tasks_limit: number;
+	projects_count: number;
+	tasks_count: number;
 	has_access: boolean;
 	ai_api_key: string;
 	created_at: Date;

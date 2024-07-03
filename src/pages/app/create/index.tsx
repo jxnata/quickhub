@@ -10,12 +10,14 @@ import { FormEvent, useCallback, useEffect, useState } from 'react'
 import { repoToName } from '@/utils/repo-to-name'
 import { toast } from 'sonner'
 import { useRouter } from 'next/router'
+import AddMember from '@/components/add-member'
 
 type Repos = RestEndpointMethodTypes['repos']['listForAuthenticatedUser']['response']['data']
 
 export default function Settings() {
 	const { data: session } = useSession()
 	const [repos, setRepos] = useState<Repos>([])
+	const [members, setMembers] = useState<string[]>([])
 	const [loading, setLoading] = useState(false)
 	const { push } = useRouter()
 
@@ -57,13 +59,24 @@ export default function Settings() {
 		const octokit = getOctokit(session.accessToken)
 
 		try {
-			const response = await octokit.repos.listForAuthenticatedUser({ per_page: 100 })
+			const response = await octokit.repos.listForAuthenticatedUser({ per_page: 100, type: 'owner' })
 
 			setRepos(response.data)
 		} catch {
 			toast.error('Failed to get user repos')
 		}
 	}, [session])
+
+	const handleMember = useCallback(
+		(member: string) => {
+			if (members.includes(member)) {
+				setMembers(members.filter((m) => m !== member))
+			} else {
+				setMembers([...members, member])
+			}
+		},
+		[members, setMembers]
+	)
 
 	useEffect(() => {
 		getRepos()
@@ -135,6 +148,7 @@ export default function Settings() {
 								disabled={loading || !repos.length}
 							></textarea>
 						</div>
+						<input type='hidden' name='members' value={members} />
 						<div className='form-control'>
 							<label className='label'>
 								<span className='label-text'>Dashboard access</span>
@@ -150,6 +164,7 @@ export default function Settings() {
 								<option value='private'>Private</option>
 							</select>
 						</div>
+						<AddMember handleMember={handleMember} members={members} />
 						<div className='form-control mt-6'>
 							<button type='submit' className='btn btn-primary'>
 								{loading && <span className='loading loading-spinner'></span>}

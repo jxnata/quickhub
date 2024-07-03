@@ -4,7 +4,9 @@ import { serverLog } from "@/helpers/server-log"
 import Members from "@/models/members"
 import Projects from "@/models/projects"
 import Users from "@/models/users"
+import IUser from "@/models/users/types"
 import { Request } from "@/types/api"
+import { explode } from "@/utils/explode"
 import { NextResponse } from "next/server"
 
 export const POST = auth(async function (req: Request) {
@@ -15,10 +17,15 @@ export const POST = auth(async function (req: Request) {
 
         const body = await req.json();
 
+        // get project owner
         const owner = await Users.findOne({ _id: req.auth.user.id });
 
         if (!owner) return NextResponse.json({ error: 'User not found.' }, { status: 404 });
 
+        // check number of projects for this owner
+        if (owner.projects_count >= owner.projects_limit) return NextResponse.json({ error: `Limit of ${owner.projects_limit} projects reached` }, { status: 403 });
+
+        // create project in database
         const project = await Projects.create({
             name: body.name,
             repository: body.repository,
@@ -27,11 +34,34 @@ export const POST = auth(async function (req: Request) {
             owner: owner._id
         });
 
-        await Members.create({
-            user: owner._id,
-            project: project._id,
-            role: 2
-        })
+        let include_owner = false;
+        if (body.members) {
+            // check if owner is included in members
+            include_owner = body.members.includes(owner.username)
+
+            const members = explode(body.members)
+
+            // find users and create members
+            const users = await Users.find({ username: { $in: members } });
+
+            await Members.insertMany(users.map(user => ({
+                user: user._id,
+                project: project._id,
+                role: user._id === owner._id ? 2 : 1
+            })))
+        }
+
+        // create member for owner if not included
+        if (!include_owner) {
+            await Members.create({
+                user: owner._id,
+                project: project._id,
+                role: 2
+            })
+        }
+
+        // update projects count
+        await Users.updateOne({ _id: owner._id }, { $inc: { projects_count: 1 } });
 
         return NextResponse.json({ project }, { status: 201 });
     } catch (error) {

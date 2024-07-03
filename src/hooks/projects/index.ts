@@ -2,7 +2,6 @@ import { api } from '@/services/api/main'
 import { ProjectList } from '@/types/api/projects'
 import useSWR from 'swr'
 
-
 const fetcher = (url: string) => api.get<ProjectList>(url).then(r => r.data)
 
 const useProjects = ({ skip, limit }: Props) => {
