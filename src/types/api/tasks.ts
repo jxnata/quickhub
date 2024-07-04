@@ -27,3 +27,10 @@ export type TaskList = {
 export type TaskView = {
     task: Task
 }
+
+export enum TaskStatus {
+    BACKLOG = 0,
+    TODO = 1,
+    IN_PROGRESS = 2,
+    DONE = 3
+}

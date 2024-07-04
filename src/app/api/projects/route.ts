@@ -20,7 +20,7 @@ export const POST = auth(async function (req: Request) {
         // get project owner
         const owner = await Users.findOne({ _id: req.auth.user.id });
 
-        if (!owner) return NextResponse.json({ error: 'User not found.' }, { status: 404 });
+        if (!owner) return NextResponse.json({ message: 'User not found.' }, { status: 404 });
 
         // check number of projects for this owner
         if (owner.projects_count >= owner.projects_limit) return NextResponse.json({ error: `Limit of ${owner.projects_limit} projects reached` }, { status: 403 });
@@ -66,7 +66,7 @@ export const POST = auth(async function (req: Request) {
         return NextResponse.json({ project }, { status: 201 });
     } catch (error) {
         serverLog(error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
     }
 })
 
@@ -86,7 +86,7 @@ export const GET = auth(async function (req: Request) {
             { $limit: limit },
             {
                 $lookup: {
-                    from: 'Tasks',
+                    from: 'tasks',
                     localField: '_id',
                     foreignField: 'project',
                     as: 'tasks',
@@ -107,6 +107,6 @@ export const GET = auth(async function (req: Request) {
         return NextResponse.json({ projects, skip, limit }, { status: 200 });
     } catch (error) {
         serverLog(error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
     }
 })

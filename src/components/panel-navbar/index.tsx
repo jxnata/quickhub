@@ -5,7 +5,7 @@ import { Session } from 'next-auth'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 
-export default function PainelNavbar({ title }: Props) {
+export default function PanelNavbar({ title }: Props) {
 	const { data } = useSession()
 
 	if (!data) return null

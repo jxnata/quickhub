@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react'
 import { RestEndpointMethodTypes } from '@octokit/rest'
 import { toast } from 'sonner'
 import { FaTimes } from 'react-icons/fa'
+import { toastError } from '@/utils/toast-error'
 
 type User = RestEndpointMethodTypes['users']['getByUsername']['response']['data']
 
@@ -36,8 +37,8 @@ export default function AddMember({ handleMember, members }: Props) {
 			const { data } = await octokit.users.getByUsername({ username: searchTerm })
 
 			setUser(data)
-		} catch {
-			toast.error('Failed to search user')
+		} catch (error) {
+			toastError(error, 'Failed to search user')
 			setUser(undefined)
 		} finally {
 			setLoading(false)

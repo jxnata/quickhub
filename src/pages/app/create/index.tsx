@@ -1,6 +1,6 @@
 import Container from '@/components/container'
 import Content from '@/components/content'
-import PainelNavbar from '@/components/painel-navbar'
+import PanelNavbar from '@/components/panel-navbar'
 import { getOctokit } from '@/helpers/github'
 import { api } from '@/services/api/main'
 import { useSession } from 'next-auth/react'
@@ -11,6 +11,7 @@ import { repoToName } from '@/utils/repo-to-name'
 import { toast } from 'sonner'
 import { useRouter } from 'next/router'
 import AddMember from '@/components/add-member'
+import { toastError } from '@/utils/toast-error'
 
 type Repos = RestEndpointMethodTypes['repos']['listForAuthenticatedUser']['response']['data']
 
@@ -34,8 +35,8 @@ export default function Settings() {
 			toast.success('Project created!')
 
 			push(`/app/${data.repository}`)
-		} catch {
-			toast.error('Failed to create project')
+		} catch (error) {
+			toastError(error, 'Failed to create project')
 		} finally {
 			setLoading(false)
 		}
@@ -62,8 +63,8 @@ export default function Settings() {
 			const response = await octokit.repos.listForAuthenticatedUser({ per_page: 100, type: 'owner' })
 
 			setRepos(response.data)
-		} catch {
-			toast.error('Failed to get user repos')
+		} catch (error) {
+			toastError(error, 'Failed to get user repos')
 		}
 	}, [session])
 
@@ -84,7 +85,7 @@ export default function Settings() {
 
 	return (
 		<Container>
-			<PainelNavbar title='Create Project' />
+			<PanelNavbar title='Create Project' />
 			<Content>
 				<div className='flex w-full max-w-7xl mt-4 mb-8'>
 					<div className='breadcrumbs text-sm'>

@@ -12,11 +12,12 @@ const initial = {
 const fetcher = (url: string) => api.get<TaskList>(url).then(r => r.data)
 
 const useTasks = ({ project }: Props) => {
-	const { data, error } = useSWR(project ? `/tasks/project/${project}` : null, fetcher)
+	const { data, error, mutate } = useSWR(project ? `/tasks/project/${project}` : null, fetcher)
 
 	return {
 		tasks: data?.tasks || initial,
 		loading: !data && !error,
+		mutate
 	}
 }
 

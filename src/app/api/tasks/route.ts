@@ -9,6 +9,7 @@ import { Request } from "@/types/api"
 import { explode } from "@/utils/explode"
 import { NextResponse } from "next/server"
 
+// create task
 export const POST = auth(async function (req: Request) {
     try {
         if (!req.auth || !req.auth.user) return NextResponse.json({ message: "Not authenticated" }, { status: 401 })
@@ -23,24 +24,30 @@ export const POST = auth(async function (req: Request) {
 
         const owner = await Users.findOne<IUser>({ _id: req.auth.user.id });
 
-        if (!owner) return NextResponse.json({ error: 'User not found.' }, { status: 404 });
+        if (!owner) return NextResponse.json({ message: 'User not found.' }, { status: 404 });
 
         // check number of tasks for this owner
         if (owner.tasks_count >= owner.tasks_limit) return NextResponse.json({ error: `Limit of ${owner.tasks_limit} tasks reached` }, { status: 403 });
 
-        // create issue in github
-        const octokit = getOctokit(session.accessToken)
+        let issue_id: Number = body.issue_id || undefined;
 
-        const issue = await octokit.issues.create({
-            owner: owner.username,
-            repo: body.project_repo.split('/')[1],
-            title: body.title,
-            body: body.description,
-            labels: explode(body.tags),
-            assignees: explode(body.assignees)
-        })
+        if (!body.issue_id || body.issue_id === 'default') {
+            // create issue in github
+            const octokit = getOctokit(session.accessToken)
 
-        if (!issue || !issue.data) return NextResponse.json({ error: 'Error when creating github issue.' }, { status: 500 });
+            const issue = await octokit.issues.create({
+                owner: owner.username,
+                repo: body.project_repo.split('/')[1],
+                title: body.title,
+                body: body.description,
+                labels: explode(body.tags),
+                assignees: explode(body.assignees)
+            })
+
+            if (!issue || !issue.data) return NextResponse.json({ message: 'Error when creating github issue.' }, { status: 500 });
+
+            issue_id = issue.data.number
+        }
 
         // get assignees users
         const assignees = await Users.find<IUser>({ username: { $in: explode(body.assignees) } });
@@ -54,7 +61,7 @@ export const POST = auth(async function (req: Request) {
             priority: body.priority,
             tags: explode(body.tags),
             assignees: assignees.map(u => u._id),
-            issue_id: issue.data.number,
+            issue_id: issue_id,
             creator: owner._id
         });
 
@@ -64,6 +71,6 @@ export const POST = auth(async function (req: Request) {
         return NextResponse.json({ task }, { status: 201 });
     } catch (error) {
         serverLog(error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
     }
 })

@@ -1,7 +1,7 @@
 import Container from '@/components/container'
 import { FaGithub } from 'react-icons/fa'
 
-export default function Painel() {
+export default function Panel() {
 	return (
 		<Container>
 			<div className='m-auto w-full max-w-xl'>

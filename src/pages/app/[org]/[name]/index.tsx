@@ -1,12 +1,13 @@
+import BacklogTask from '@/components/backlog-task'
 import Container from '@/components/container'
 import Content from '@/components/content'
-import PainelNavbar from '@/components/painel-navbar'
+import PanelNavbar from '@/components/panel-navbar'
 import Task from '@/components/task-item'
 import useProject from '@/hooks/projects/view'
 import useTasks from '@/hooks/tasks'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { FaHamburger, FaList, FaPlus, FaUpload } from 'react-icons/fa'
+import { FaList, FaPlus } from 'react-icons/fa'
 
 export default function Project() {
 	const { query } = useRouter()
@@ -16,7 +17,7 @@ export default function Project() {
 
 	return (
 		<Container>
-			<PainelNavbar title={project && project.name} />
+			<PanelNavbar title={project && project.name} />
 
 			{project && (
 				<Content>
@@ -36,12 +37,46 @@ export default function Project() {
 								<FaPlus />
 								Create
 							</Link>
-							<Link href={`/app/${project.repository}/create`} className='btn btn-outline'>
-								<FaUpload />
-							</Link>
-							<button className='btn btn-outline'>
-								<FaList />
-							</button>
+							<div className='drawer drawer-end'>
+								<input id='backlog-drawer' type='checkbox' className='drawer-toggle' />
+								<div className='drawer-content'>
+									<div className='indicator'>
+										{tasks && tasks.backlog.length > 0 && (
+											<span className='indicator-item badge badge-primary z-0'>
+												{tasks.backlog.length}
+											</span>
+										)}
+										<label htmlFor='backlog-drawer' className='drawer-button btn btn-outline'>
+											<FaList />
+										</label>
+									</div>
+								</div>
+								<div className='drawer-side'>
+									<label
+										htmlFor='backlog-drawer'
+										aria-label='close sidebar'
+										className='drawer-overlay'
+									></label>
+									<div className='bg-base-200 text-base-content min-h-full w-full max-w-96 p-4'>
+										<h3 className='text-xl font-bold mb-4'>Backlog Tasks</h3>
+										{tasks.backlog.map((task, i) => (
+											<BacklogTask key={i} task={task} />
+										))}
+										{tasks.backlog.length === 0 && (
+											<div className='text-center text-neutral-content'>
+												No tasks in backlog.
+												<br />
+												<Link
+													href={`/app/${project.repository}/create`}
+													className='btn btn-sm btn-primary mt-4'
+												>
+													Create one
+												</Link>
+											</div>
+										)}
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div className='w-full max-w-7xl flex gap-4'>

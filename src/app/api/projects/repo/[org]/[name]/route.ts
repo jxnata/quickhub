@@ -21,6 +21,6 @@ export const GET = auth(async function (req: Request, { params }) {
         return NextResponse.json({ project }, { status: 200 });
     } catch (error) {
         serverLog(error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
     }
 })

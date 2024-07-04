@@ -1,9 +1,10 @@
 import Container from '@/components/container'
 import Content from '@/components/content'
-import PainelNavbar from '@/components/painel-navbar'
+import PanelNavbar from '@/components/panel-navbar'
 import themes from '@/constants/themes'
 import useMe from '@/hooks/users/me'
 import { api } from '@/services/api/main'
+import { toastError } from '@/utils/toast-error'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -38,8 +39,8 @@ export default function Settings() {
 
 				toast.success('Settings updated!')
 			}
-		} catch {
-			toast.error('Failed to update settings')
+		} catch (error) {
+			toastError(error, 'Failed to update settings')
 		} finally {
 			setSubmitting(false)
 		}
@@ -47,7 +48,7 @@ export default function Settings() {
 
 	return (
 		<Container>
-			<PainelNavbar title='Settings' />
+			<PanelNavbar title='Settings' />
 			<Content>
 				<div className='flex w-full max-w-7xl mt-4 mb-8'>
 					<div className='breadcrumbs text-sm'>
